@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/ava-labs/avalanche-dapp-sdks/compare/v1.0.0...v1.1.0) (2023-03-14)
+
+### Features
+
+- add web3-react connector for core ([#18](https://github.com/ava-labs/avalanche-dapp-sdks/issues/18)) ([914a35b](https://github.com/ava-labs/avalanche-dapp-sdks/commit/914a35b359e67b38942df837b43abf19ba737a05))
+
 ## 1.0.1-alpha.0 (2023-03-14)
 
 **Note:** Version bump only for package core-extension-dapp-example
