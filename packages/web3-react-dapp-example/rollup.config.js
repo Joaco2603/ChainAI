@@ -4,6 +4,7 @@ import del from 'rollup-plugin-delete';
 import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   input: './index.ts',
   output: {
@@ -17,7 +18,7 @@ export default {
       typescript: ttypescript,
       tsconfig: 'tsconfig.json',
       tsconfigOverride: {
-        exclude: ['*.test.*'],
+        exclude: ['./test/**'],
         // index.ts is included here and not in tsconfig.ts so relative imports
         // are imported correctly by VS Code.
         include: ['src', 'index.ts'],
@@ -29,5 +30,4 @@ export default {
     json(),
     commonjs(),
   ],
-  external: ['ethers', 'big.js'],
 };

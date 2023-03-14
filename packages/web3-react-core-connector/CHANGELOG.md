@@ -5,7 +5,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 1.0.1-alpha.0 (2023-03-14)
 
-**Note:** Version bump only for package avalanche-dapp-sdks
+**Note:** Version bump only for package @avalabs/web3-react-core-connector
 
 # [1.0.0](https://github.com/ava-labs/avalanche-dapp-sdks/compare/v0.0.1-alpha.2...v1.0.0) (2022-06-16)
 
@@ -21,11 +21,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 0.0.1-alpha.2 (2022-06-14)
 
-**Note:** Version bump only for package avalanche-dapp-sdks
+**Note:** Version bump only for package @avalabs/avalanche-connector
 
 ## 0.0.1-alpha.1 (2022-06-09)
 
-**Note:** Version bump only for package avalanche-dapp-sdks
+**Note:** Version bump only for package @avalabs/avalanche-connector
 
 ## 0.0.1-alpha.0 (2022-06-09)
 

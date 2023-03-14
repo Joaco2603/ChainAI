@@ -3,10 +3,10 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@web3-react/core": "8.0.17-beta.0",
-    "@avalabs/types": "^2.4.0"
+    "@avalabs/types": "2.4.0"
   },
   "scripts": {
+    "bootstrap": "yarn install && lerna exec yarn install && yarn build",
     "build": "lerna run build",
     "lint": "lerna run lint",
     "test": "lerna run test",
@@ -15,20 +15,28 @@
     "commit": "cz"
   },
   "devDependencies": {
-    "@types/node": "^16.11.12",
-    "@typescript-eslint/eslint-plugin": "^5.10.1",
-    "@typescript-eslint/parser": "^5.10.1",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.7.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.28.0",
-    "eslint-plugin-react-hooks": "^4.3.0",
-    "husky": "^7.0.4",
-    "lerna": "^4.0.0",
-    "lint-staged": "^12.1.2",
-    "prettier": "^2.5.1",
-    "typescript": "^4.5.4"
+    "@types/node": "16.11.12",
+    "@typescript-eslint/eslint-plugin": "5.10.1",
+    "@typescript-eslint/parser": "5.10.1",
+    "cz-conventional-changelog": "3.3.0",
+    "eslint": "8.7.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-react-hooks": "4.3.0",
+    "husky": "7.0.4",
+    "lerna": "4.0.0",
+    "lint-staged": "12.1.2",
+    "prettier": "2.5.1",
+    "typescript": "4.5.4",
+    "@rollup/plugin-json": "4.1.0",
+    "@rollup/plugin-typescript": "8.2.1",
+    "@zerollup/ts-transform-paths": "1.7.18",
+    "rollup": "2.47.0",
+    "rollup-plugin-commonjs": "10.1.0",
+    "rollup-plugin-delete": "2.0.0",
+    "rollup-plugin-typescript2": "0.31.0",
+    "ttypescript": "1.5.15"
   },
   "workspaces": [
     "packages/*"
@@ -38,8 +46,12 @@
     "*.{ts,tsx}": "eslint --cache --fix"
   },
   "volta": {
-    "node": "16.13.1",
-    "yarn": "1.22.17"
+    "node": "16.19.1",
+    "yarn": "1.22.19"
+  },
+  "resolutions": {
+    "parse-path": "5.0.0",
+    "nth-check": "2.0.1"
   },
   "config": {
     "commitizen": {

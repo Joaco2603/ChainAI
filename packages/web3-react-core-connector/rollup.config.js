@@ -5,7 +5,7 @@ import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 
 export default {
-  input: './index.ts',
+  input: './src/index.ts',
   output: {
     dir: 'dist',
     format: 'cjs',
@@ -16,18 +16,8 @@ export default {
     typescript({
       typescript: ttypescript,
       tsconfig: 'tsconfig.json',
-      tsconfigOverride: {
-        exclude: ['*.test.*'],
-        // index.ts is included here and not in tsconfig.ts so relative imports
-        // are imported correctly by VS Code.
-        include: ['src', 'index.ts'],
-        compilerOptions: {
-          rootDir: './',
-        },
-      },
     }),
     json(),
     commonjs(),
   ],
-  external: ['ethers', 'big.js'],
 };

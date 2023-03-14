@@ -2,12 +2,15 @@
 
 This is a [Lerna project](https://github.com/lerna/lerna). The idea here is to aggregate all of our SDKs into one mono repo of smaller SDKs. This will avoid having to link a bunch of projects and make it much easier to work features across many SDKs at once.
 
+## Getting started
+
+run `yarn bootstrap` before doing anything. This will install, build and link all packages
+
 ## Develop project
 
-1. `yarn install`
-2. After you develop you run `yarn build` from the root of the project and that will build all sdk projects
-3. To deploy a alpha release make sure you have used a [conventional commit message](https://www.conventionalcommits.org/en/v1.0.0/) after that simply checkout the `alpha-release` branch and push. This will kick off the build and release process
-4. Once we know it works for the consumer on alpha then a push to master can be done and a official release will be issued from there
+To deploy a alpha release make sure you have used a [conventional commit message](https://www.conventionalcommits.org/en/v1.0.0/) after that simply checkout the `alpha-release` branch and push. This will kick off the build and release process
+
+Once we know it works for the consumer on alpha then a push to master can be done and a official release will be issued from there
 
 **note**: make sure all code is PR'd properly before going to master.
 
@@ -28,4 +31,7 @@ To create a release:
 
 ## Running example dapp
 
-1. cd into the dapp and yarn start
+Make sure to run the getting started steps above, then:
+
+1. cd into the `/packages/web3-react-dapp-example`
+2. `yarn start`
