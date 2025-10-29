@@ -4,7 +4,7 @@
   "private": true,
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@avalabs/web3-react-core-connector": "1.1.1",
+    "@avalabs/web3-react-core-connector": "^1.1.1",
     "@web3-react/core": "8.1.2-beta.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

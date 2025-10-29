@@ -50,7 +50,6 @@ This incentivizes continuous improvement and fair competition among AI models!
 This monorepo contains the following packages:
 
 ### 🎯 Smart Contracts
-
 - **[`@avalabs/model-chain-contracts`](packages/model-chain-contracts)** - Core smart contracts for ModelChain
   - ModelRegistry contract with rating and selection logic
   - Comprehensive test suite (41 tests, 100% passing)
@@ -58,7 +57,6 @@ This monorepo contains the following packages:
   - Full TypeScript support
 
 ### 🔌 Web3 Integrations
-
 - **`@avalabs/contacts`** - Contact management utilities
 - **`@avalabs/web3-react-core-connector`** - Web3 React connector for Avalanche
 - **`@avalabs/web3-react-dapp-example`** - Example DApp implementation
@@ -165,7 +163,6 @@ npm test
 ### Test Coverage
 
 The smart contracts have **100% test coverage** with 41 passing tests covering:
-
 - Model registration and validation
 - Rating system with constraints
 - Selection algorithm (statistical verification)
@@ -215,14 +212,12 @@ lerna version --conventional-commits --conventional-graduate --exact --message "
 ## 🌐 Network Configuration
 
 ### Avalanche Fuji Testnet
-
 - **Chain ID:** 43113
 - **RPC:** https://api.avax-test.network/ext/bc/C/rpc
 - **Explorer:** https://testnet.snowtrace.io
 - **Faucet:** https://faucet.avax.network/
 
 ### Avalanche Mainnet
-
 - **Chain ID:** 43114
 - **RPC:** https://api.avax.network/ext/bc/C/rpc
 - **Explorer:** https://snowtrace.io
@@ -284,3 +279,37 @@ This project is licensed under the **BSD-3-Clause License** - see the [LICENSE](
 [Website](https://avax.network) • [Twitter](https://twitter.com/avalancheavax) • [Discord](https://chat.avalabs.org)
 
 </div>
+
+## Getting started
+
+run `yarn bootstrap` before doing anything. This will install, build and link all packages
+
+## Develop project
+
+To deploy a alpha release make sure you have used a [conventional commit message](https://www.conventionalcommits.org/en/v1.0.0/) after that simply checkout the `alpha-release` branch and push. This will kick off the build and release process
+
+Once we know it works for the consumer on alpha then a push to master can be done and a official release will be issued from there
+
+**note**: make sure all code is PR'd properly before going to master.
+
+## Production Release
+
+Alpha releases are automated but for now production releases are manual.
+
+To create a release:
+
+- Run the following on the `alpha-release` branch (pull first!)
+
+```
+    lerna version --conventional-commits --conventional-graduate --exact --message "Production Release %s"
+```
+
+- Create a PR from `alpha-release` to `master`
+- Squash and merge (this will publish the new version)
+
+## Running example dapp
+
+Make sure to run the getting started steps above, then:
+
+1. cd into the `/packages/web3-react-dapp-example`
+2. `yarn start`
