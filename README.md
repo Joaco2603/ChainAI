@@ -1,6 +1,6 @@
 <div align="center">
 
-![ChainAI Logo](assets/ChainAI.jpg)
+![ChainAI Logo](C:\Users\joaco\Documents\Programming\DannyBot\ChainAI\avalanche-dapp-sdks\assets\ChainAI.jpg)
 
 # ChainAI DApp SDKs
 
