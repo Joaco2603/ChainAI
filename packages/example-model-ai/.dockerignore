@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation (no needed in container)
+README.MD
+README.md
+GUIDE.md
+*.backup
+
+# Build scripts (no needed in container)
+build.ps1
+build.sh
+train_model.py
+
+# OS
+.DS_Store
+Thumbs.db

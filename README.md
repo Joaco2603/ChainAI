@@ -1,6 +1,6 @@
 <div align="center">
 
-![ChainAI Logo](assets/ChainAI.jpg)
+<img src="./assets/ChainAI.jpg" alt="ChainAI" width="20" height="20">
 
 # ChainAI DApp SDKs
 

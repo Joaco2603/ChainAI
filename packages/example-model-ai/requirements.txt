@@ -1,0 +1,6 @@
+# Dependencias para entrenamiento e inferencia del modelo GPT Mini
+tensorflow>=2.10.0
+numpy>=1.23.5
+
+# Nota: Si tienes problemas con TensorFlow en Docker, considera usar:
+# tensorflow-cpu>=2.10.0  # Versión solo CPU (más ligera)
