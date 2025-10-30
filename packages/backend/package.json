@@ -1,0 +1,31 @@
+{
+  "name": "@chainai/backend",
+  "version": "1.0.0",
+  "description": "Backend API for ChainAI - Decentralized AI Model Registry",
+  "private": true,
+  "scripts": {
+    "setup": "python -m venv venv && venv/Scripts/activate && pip install -r requirements.txt",
+    "dev": "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
+    "start": "python -m app.main",
+    "test": "python test_api.py",
+    "docker:build": "docker build -t chainai-backend .",
+    "docker:run": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "docker:logs": "docker-compose logs -f backend",
+    "lint": "black app/ && isort app/",
+    "type-check": "mypy app/"
+  },
+  "keywords": [
+    "chainai",
+    "fastapi",
+    "blockchain",
+    "avalanche",
+    "ai",
+    "docker"
+  ],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "engines": {
+    "python": ">=3.9"
+  }
+}

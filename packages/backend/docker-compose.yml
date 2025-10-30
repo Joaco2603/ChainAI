@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: chainai-backend
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./app:/app/app
+      - /var/run/docker.sock:/var/run/docker.sock # For Docker-in-Docker
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=production
+      - HOST=0.0.0.0
+      - PORT=8000
+    restart: unless-stopped
+    depends_on:
+      - redis
+    networks:
+      - chainai-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: chainai-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - chainai-network
+
+networks:
+  chainai-network:
+    driver: bridge
+
+volumes:
+  redis-data:
