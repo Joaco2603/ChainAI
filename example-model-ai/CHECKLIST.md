@@ -205,7 +205,7 @@ Para documentar tu progreso, toma capturas de:
 
 ## ✅ ¡Completado!
 
-Fecha de integración: ********\_********
+Fecha de integración: **\*\*\*\***\_**\*\*\*\***
 
 Notas adicionales:
 
