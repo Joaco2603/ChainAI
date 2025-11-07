@@ -558,4 +558,4 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
     receive() external payable {
         // Accept direct payments (optional)
     }
-}  
+}  //hi
