@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  gemma-2b-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Opcional: Descargar modelo en build time
+        # Descomenta y agrega tu token para incluir el modelo en la imagen
+        # HUGGINGFACE_TOKEN: ${HUGGINGFACE_TOKEN}
+    image: chainai-gemma2b:latest
+    container_name: gemma2b-inference
+    
+    # Puerto del servicio
+    ports:
+      - "${PORT:-8000}:8000"
+    
+    # Variables de entorno
+    environment:
+      - MODEL_PATH=/app/model_weights
+      - PORT=8000
+      - HOST=0.0.0.0
+      - HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
+    
+    # Archivo de variables de entorno
+    env_file:
+      - .env
+    
+    # Volúmenes
+    volumes:
+      # Montar modelo local (si ya lo descargaste localmente)
+      - ./model_weights:/app/model_weights
+      # Caché de HuggingFace (opcional)
+      - ~/.cache/huggingface:/home/appuser/.cache/huggingface
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Reiniciar automáticamente
+    restart: unless-stopped
+    
+    # Recursos (ajustar según disponibilidad)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+          # Descomentar si tienes GPU NVIDIA disponible
+          # devices:
+          #   - driver: nvidia
+          #     count: 1
+          #     capabilities: [gpu]
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Configuración de red (opcional)
+networks:
+  default:
+    name: chainai-network
+    driver: bridge
+
+# Volúmenes nombrados (opcional)
+volumes:
+  model_cache:
+    driver: local

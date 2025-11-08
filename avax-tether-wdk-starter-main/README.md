@@ -349,6 +349,7 @@ Networks are configured in `packages/nextjs/config/networks.ts`:
 {
   local: {
     chainId: 1337,
+    // rpcUrl: "http://127.0.0.1:9650/ext/bc/C/rpc"
     rpcUrl: "http://127.0.0.1:9650/ext/bc/C/rpc"
   },
   fuji: {

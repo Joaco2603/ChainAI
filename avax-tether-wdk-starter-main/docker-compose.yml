@@ -9,12 +9,13 @@ services:
       - "9651:9651"
     command: >
       /avalanchego/build/avalanchego
-      --network-id=local
+      --network-id=1337
       --http-host=0.0.0.0
       --http-port=9650
       --staking-enabled=false
       --snow-sample-size=1
       --snow-quorum-size=1
+      --chain-config-dir=/root/.avalanchego/configs/chains
     volumes:
       - avalanche-data:/root/.avalanchego
     healthcheck:

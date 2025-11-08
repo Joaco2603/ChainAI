@@ -1,4 +1,7 @@
 # Dependencias para entrenamiento e inferencia del modelo GPT Mini
+# IMPORTANTE: TensorFlow requiere Python 3.11 o 3.12 (no compatible con 3.14)
+# Instala Python 3.11 o 3.12 antes de ejecutar: python -m pip install -r requirements.txt
+
 tensorflow>=2.10.0
 numpy>=1.23.5
 
