@@ -46,6 +46,13 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
     /// @dev Percentage for top model selection (70%)
     uint256 public constant TOP_MODEL_PROBABILITY = 70;
 
+    // Agregar variables de estado para pagos
+    uint256 public registrationFee;     // Costo para registrar un modelo
+    uint256 public usageFee;           // Costo para usar un modelo
+    uint256 public platformFeePercent; // Porcentaje que se queda la plataforma (20% = 20)
+    
+    mapping(address => uint256) public pendingWithdrawals; // Balances pendientes de retiro
+
     // ============ Events ============
 
     /**
@@ -88,6 +95,11 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
      */
     event ModelReactivated(uint256 indexed modelId, uint256 timestamp);
 
+    // Agregar eventos
+    event FeeUpdated(string feeType, uint256 newAmount);
+    event PaymentReceived(address indexed from, uint256 amount, string paymentType);
+    event WithdrawalMade(address indexed to, uint256 amount);
+
     // ============ Errors ============
 
     error InvalidRating();
@@ -97,10 +109,17 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
     error ModelInactive();
     error OnlyModelOwner();
     error EmptyDockerUrl();
+    error InsufficientPayment();
+    error WithdrawalFailed();
+    error NoFundsToWithdraw();
 
     // ============ Constructor ============
 
-    constructor() Ownable(msg.sender) {}
+    constructor() Ownable(msg.sender) {
+        registrationFee = 0.1 ether;    // 0.1 AVAX para registrar
+        usageFee = 0.01 ether;         // 0.01 AVAX para usar
+        platformFeePercent = 20;        // 20% para la plataforma
+    }
 
     // ============ External Functions ============
 
@@ -111,9 +130,14 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
      */
     function registerModel(string calldata dockerImageUrl) 
         external 
+        payable
         nonReentrant 
         returns (uint256 modelId) 
     {
+        if (msg.value < registrationFee) {
+            revert InsufficientPayment();
+        }
+
         if (bytes(dockerImageUrl).length == 0) {
             revert EmptyDockerUrl();
         }
@@ -133,6 +157,7 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
         totalModels++;
 
         emit ModelRegistered(modelId, msg.sender, dockerImageUrl, block.timestamp);
+        emit PaymentReceived(msg.sender, msg.value, "registration");
     }
 
     /**
@@ -223,47 +248,30 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
      * @dev Uses weighted random selection: 70% chance for top model, 30% for others
      * @return modelId The ID of the selected model
      */
-    function selectModel() external nonReentrant returns (uint256 modelId) {
-        uint256 activeCount = _getActiveModelCount();
-        if (activeCount == 0) {
-            revert NoActiveModels();
+    function selectModel() 
+        external 
+        payable 
+        nonReentrant 
+        returns (uint256 modelId) 
+    {
+        if (msg.value < usageFee) {
+            revert InsufficientPayment();
         }
 
-        // Get the top model
-        (uint256[] memory topModels, ) = this.getTopModels(1);
-        uint256 topModelId = topModels[0];
+        modelId = _selectModelInternal();
 
-        // Generate pseudo-random number (0-99)
-        // Note: This is not cryptographically secure randomness
-        // For production, consider using Chainlink VRF or similar
-        uint256 randomValue = uint256(
-            keccak256(
-                abi.encodePacked(
-                    block.timestamp,
-                    block.prevrandao,
-                    msg.sender,
-                    totalModels
-                )
-            )
-        ) % 100;
-
-        bool isTopModel;
-
-        // 70% chance to select the top model
-        if (randomValue < TOP_MODEL_PROBABILITY) {
-            modelId = topModelId;
-            isTopModel = true;
-        } else {
-            // 30% chance to select a random model (including the top one)
-            modelId = _selectRandomActiveModel(randomValue);
-            isTopModel = (modelId == topModelId);
-        }
-
+        // Distribuir el pago
         Model storage selectedModel = models[modelId];
+        uint256 platformFee = (msg.value * platformFeePercent) / 100;
+        uint256 modelOwnerFee = msg.value - platformFee;
+        
+        pendingWithdrawals[selectedModel.owner] += modelOwnerFee;
+        pendingWithdrawals[owner()] += platformFee;
+
         selectedModel.timesSelected++;
 
-        emit ModelSelected(modelId, selectedModel.owner, isTopModel, block.timestamp);
-
+        emit ModelSelected(modelId, selectedModel.owner, true, block.timestamp);
+        emit PaymentReceived(msg.sender, msg.value, "usage");
         return modelId;
     }
 
@@ -389,6 +397,67 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
         return modelIds;
     }
 
+    // ============ Payment Functions ============
+
+    /**
+     * @notice Withdraw accumulated funds
+     * @dev Allows model owners and platform owner to withdraw their earnings
+     */
+    function withdraw() external nonReentrant {
+        uint256 amount = pendingWithdrawals[msg.sender];
+        if (amount == 0) {
+            revert NoFundsToWithdraw();
+        }
+
+        pendingWithdrawals[msg.sender] = 0;
+
+        (bool success, ) = msg.sender.call{value: amount}("");
+        if (!success) {
+            revert WithdrawalFailed();
+        }
+
+        emit WithdrawalMade(msg.sender, amount);
+    }
+
+    /**
+     * @notice Get withdrawable balance for an address
+     * @param user The user address to check
+     * @return amount The amount available for withdrawal
+     */
+    function getWithdrawableBalance(address user) external view returns (uint256) {
+        return pendingWithdrawals[user];
+    }
+
+    // ============ Admin Functions ============
+
+    /**
+     * @notice Update registration fee (only owner)
+     * @param newFee New registration fee in wei
+     */
+    function updateRegistrationFee(uint256 newFee) external onlyOwner {
+        registrationFee = newFee;
+        emit FeeUpdated("registration", newFee);
+    }
+
+    /**
+     * @notice Update usage fee (only owner)
+     * @param newFee New usage fee in wei
+     */
+    function updateUsageFee(uint256 newFee) external onlyOwner {
+        usageFee = newFee;
+        emit FeeUpdated("usage", newFee);
+    }
+
+    /**
+     * @notice Update platform fee percentage (only owner)
+     * @param newPercent New platform fee percentage (0-100)
+     */
+    function updatePlatformFeePercent(uint256 newPercent) external onlyOwner {
+        require(newPercent <= 100, "Invalid percentage");
+        platformFeePercent = newPercent;
+        emit FeeUpdated("platform", newPercent);
+    }
+
     // ============ Internal Functions ============
 
     /**
@@ -447,4 +516,46 @@ contract ModelRegistry is Ownable, ReentrancyGuard {
         }
         return count;
     }
-}
+
+    /**
+     * @dev Internal model selection logic with randomization
+     * @return modelId The selected model ID
+     */
+    function _selectModelInternal() internal returns (uint256) {
+        uint256 activeCount = _getActiveModelCount();
+        if (activeCount == 0) {
+            revert NoActiveModels();
+        }
+
+        // Get the top model
+        (uint256[] memory topModels, ) = this.getTopModels(1);
+        uint256 topModelId = topModels[0];
+
+        // Generate pseudo-random number (0-99)
+        uint256 randomValue = uint256(
+            keccak256(
+                abi.encodePacked(
+                    block.timestamp,
+                    block.prevrandao,
+                    msg.sender,
+                    totalModels
+                )
+            )
+        ) % 100;
+
+        // 70% chance to select the top model
+        if (randomValue < TOP_MODEL_PROBABILITY) {
+            return topModelId;
+        } else {
+            // 30% chance to select a random model
+            return _selectRandomActiveModel(randomValue);
+        }
+    }
+
+    /**
+     * @dev Receive function to accept direct payments
+     */
+    receive() external payable {
+        // Accept direct payments (optional)
+    }
+}  //hi2 
